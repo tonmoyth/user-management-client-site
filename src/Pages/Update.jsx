@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLoaderData } from "react-router";
 import Swal from "sweetalert2";
 
-const AddUser = () => {
+const Update = () => {
+  const { _id, name, photo, email, gender } = useLoaderData();
+
+  useEffect(() => {
+    if (gender) {
+      setRadio(gender);
+    }
+  }, [gender]);
+
   const [radio, setRadio] = useState("");
 
   const handleAddUserForm = (e) => {
@@ -16,9 +25,8 @@ const AddUser = () => {
       photo,
       gender,
     };
-
-    fetch("http://localhost:3000/users", {
-      method: "POST",
+    fetch(`http://localhost:3000/users/${_id}`, {
+      method: "PUT",
       headers: {
         "content-type": "application/json",
       },
@@ -26,18 +34,18 @@ const AddUser = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.insertedId) {
+        if (data.modifiedCount) {
           Swal.fire({
             position: "top-end",
             icon: "success",
-            title: "user added successfully",
+            title: "Update success",
             showConfirmButton: false,
             timer: 1500,
           });
-          e.target.reset()
         }
       });
   };
+
   return (
     <div>
       <h1 className="text-center text-4xl mb-5">Add User</h1>
@@ -45,12 +53,14 @@ const AddUser = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
           <input
             type="text"
+            defaultValue={name}
             name="name"
             placeholder="Name"
             className="input w-full"
           />
           <input
             type="email"
+            defaultValue={email}
             name="email"
             placeholder="Email"
             className="input w-full"
@@ -59,6 +69,7 @@ const AddUser = () => {
         <div className="mb-5">
           <input
             type="text"
+            defaultValue={photo}
             name="photo"
             placeholder="Photo"
             className="input w-full"
@@ -71,6 +82,7 @@ const AddUser = () => {
 
           <input
             type="radio"
+            defaultChecked={radio === "male"}
             onChange={() => setRadio("male")}
             checked={radio === "male"}
             name="Gender"
@@ -79,6 +91,7 @@ const AddUser = () => {
           <label htmlFor="male">Male</label>
           <input
             type="radio"
+            defaultChecked={radio === "female"}
             onChange={() => setRadio("female")}
             checked={radio === "female"}
             name="Gender"
@@ -96,4 +109,4 @@ const AddUser = () => {
   );
 };
 
-export default AddUser;
+export default Update;

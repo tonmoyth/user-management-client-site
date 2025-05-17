@@ -7,6 +7,7 @@ import MainLayout from './MainLayout.jsx'
 import Home from './components/Home.jsx'
 import Users from './Pages/Users.jsx'
 import AddUser from './Pages/AddUser.jsx'
+import Update from './Pages/Update.jsx'
 
 
 const Router = createBrowserRouter([
@@ -20,11 +21,17 @@ const Router = createBrowserRouter([
       },
       {
         path: 'users',
+        loader: () => fetch('http://localhost:3000/users'),
         Component:Users
       },
       {
         path:'addUser',
         Component: AddUser
+      },
+      {
+        path:'update/:id',
+        loader: ({params}) => fetch(`http://localhost:3000/users/${params.id}`),
+        Component: Update
       }
     ]
   }
